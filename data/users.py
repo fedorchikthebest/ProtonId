@@ -17,6 +17,7 @@ class User(SqlAlchemyBase, UserMixin):
     second_name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     class_num = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     class_liter = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    creation_year = sqlalchemy.Column(sqlalchemy.Integer, default=datetime.datetime.now().year)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     is_admin = sqlalchemy.Column(sqlalchemy.Boolean, nullable=True, default=False)
 
