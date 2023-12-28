@@ -7,7 +7,7 @@ from data.users import User
 
 def validate_password(form, data):
     val = db_sess.query(User).filter(User.login == form.login.data).first()
-    if not val :
+    if not val:
         raise ValidationError('Такого логина нет')
     elif not val.check_password(form.password.data):
         raise ValidationError('Неверный пароль')

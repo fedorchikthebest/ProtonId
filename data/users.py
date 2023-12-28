@@ -4,6 +4,7 @@ from .db_session import SqlAlchemyBase
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from sqlalchemy import orm
+from functions.datetime_functions import current_jule
 
 
 class User(SqlAlchemyBase, UserMixin):
@@ -17,7 +18,7 @@ class User(SqlAlchemyBase, UserMixin):
     second_name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     class_num = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     class_liter = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    creation_year = sqlalchemy.Column(sqlalchemy.Integer, default=datetime.datetime.now().year)
+    creation_year = sqlalchemy.Column(sqlalchemy.Integer, default=current_jule().year)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     is_admin = sqlalchemy.Column(sqlalchemy.Boolean, nullable=True, default=False)
 
