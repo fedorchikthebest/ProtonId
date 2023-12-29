@@ -10,7 +10,7 @@ class AddServiceForm(FlaskForm):
     kuznechik_key = StringField('ключ алгоритма "кузнечик"',
                                    validators=[DataRequired(), Length(min=32, max=32,
                                                                       message="Длина ключа должна быть 32"),
-                                               Regexp(regex='[A-Za-z0-9]')])
+                                               Regexp(regex='[A-Za-z]')])
     access_type = SelectField('Выберете тип доступа данных', choices=[(1, 'Только id'),
                                                                       (2, 'ФИО и класс учащегося')])
     submit = SubmitField('Добавить Сервис')
