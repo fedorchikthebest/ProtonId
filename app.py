@@ -8,6 +8,7 @@ from data.users import User
 from blueprints.auth.auth import auth
 from blueprints.services.services import services
 from config import *
+from blueprints.main_page.main import main
 
 app = Flask(__name__)
 
@@ -16,6 +17,7 @@ login_manager.init_app(app)
 
 app.register_blueprint(auth)
 app.register_blueprint(services)
+app.register_blueprint(main)
 
 app.config['SECRET_KEY'] = SECRET_KEY
 

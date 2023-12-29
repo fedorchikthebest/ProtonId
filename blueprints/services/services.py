@@ -1,12 +1,10 @@
-from flask import Blueprint, redirect, render_template, request
+from flask import Blueprint, redirect, render_template, url_for
 from blueprints.services.forms.add_service_form import AddServiceForm
 from data.services import Service
 from data.db_session import db_sess
 from flask_login import login_required, current_user
-import gostcrypto
-import requests
-import datetime
-from functions.datetime_functions import current_jule
+from functions.crypto import b64encrypt
+from blueprints.services.forms.confirm_auth import ConfirmAuth
 
 services = Blueprint('services', __name__, template_folder='templates',
                      static_folder='static', url_prefix='/service')
@@ -29,19 +27,35 @@ def add_service():
     return render_template('add_service.html', form=form)
 
 
-@services.route('/auth')
+@services.route('/auth/<string:service_id>', methods=['GET', 'POST'])
 @login_required
 def auth(service_id):
     service = db_sess.get(Service, service_id)
+    key = service.kuznechik_key
+    if service.access_type == 2:
+        form = ConfirmAuth(
+            name=b64encrypt(current_user.name, key),
+            test_key=b64encrypt('FEDOR_GORLENKO', key),
+            sure_name=b64encrypt(current_user.sure_name, key),
+            second_name=b64encrypt(current_user.second_name, key),
+            class_num=b64encrypt(current_user.class_num, key),
+            class_liter=b64encrypt(current_user.class_liter, key),
+            login=b64encrypt(current_user.login, key)
+        )
+    else:
+        form = ConfirmAuth(
+                            login=b64encrypt(current_user.login, key),
+                           test_key=b64encrypt('FEDOR_GORLENKO', key),)
+    acces_type = ['',
+                  'Этот сайт получит только ваш логин',
+                  'Этот сайт узнает о вас ФИО, логин и класс']
     if service is None:
         return 'service not found'
-    if service.access_type == 1:
-        requests.post(f'http://host_name/protonid', data={'user_id': current_user.id}, timeout=0.2)
+    return render_template('confirm.html', form=form, eccess=acces_type[service.access_type], host=service.host_name)
 
-    if service.access_type == 2:
-        requests.post(f'http://host_name/protonid', data={'user_name': current_user.name,
-                                                          'user_sure_name': current_user.sure_name,
-                                                          'user_second_name': current_user.second_name,
-                                                          'class_num': current_jule().year - current_user.creation_year,
-                                                          'class_liter': current_user.class_liter},
-                      timeout=0.2)
+
+@services.errorhandler(401)
+def error401(error):
+    return redirect(url_for('auth.login'))
+
+

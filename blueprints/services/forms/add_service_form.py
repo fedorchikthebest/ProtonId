@@ -4,9 +4,10 @@ from wtforms.validators import DataRequired, ValidationError, Length, Regexp
 
 
 class AddServiceForm(FlaskForm):
+    regex = '(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]'
     host = StringField('хост сервера', validators=[DataRequired(),
-                                                   Regexp(regex='[^/\]')])
-    kuznechik_key = StringField('ключ алгоритма "кузнечик" в формате base64',
+                                                   Regexp(regex=regex)])
+    kuznechik_key = StringField('ключ алгоритма "кузнечик"',
                                    validators=[DataRequired(), Length(min=32, max=32,
                                                                       message="Длина ключа должна быть 32"),
                                                Regexp(regex='[A-Za-z0-9]')])

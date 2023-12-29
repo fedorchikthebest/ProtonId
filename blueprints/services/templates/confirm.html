@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>
+    В уверены, что хотите зарегистрироваться? Данное приложение получет доступ к:
+</h1>
+<h2>
+    {{ eccess }}
+</h2>
+<form method="post" action="http://{{ host }}/protonID/auth">
+    {{ form.name() }}
+    {{ form.sure_name() }}
+    {{ form.second_name() }}
+    {{ form.class_num() }}
+    {{ form.class_liter() }}
+    {{ form.login() }}
+    {{ form.test_key() }}
+    {{ form.submit() }}
+</form>
+</body>
+</html>
