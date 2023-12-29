@@ -35,7 +35,6 @@ def auth(service_id):
     if service.access_type == 2:
         form = ConfirmAuth(
             name=b64encrypt(current_user.name, key),
-            test_key=b64encrypt('FEDOR_GORLENKO', key),
             sure_name=b64encrypt(current_user.sure_name, key),
             second_name=b64encrypt(current_user.second_name, key),
             class_num=b64encrypt(current_user.class_num, key),

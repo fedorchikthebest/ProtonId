@@ -3,7 +3,6 @@ from wtforms import SubmitField, HiddenField
 
 
 class ConfirmAuth(FlaskForm):
-    test_key = HiddenField('test_key')
     submit = SubmitField('Войти')
     name = HiddenField('first_name')
     sure_name = HiddenField('sure_name')
