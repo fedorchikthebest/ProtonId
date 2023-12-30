@@ -160,3 +160,4 @@ cython_debug/
 #.idea/
 test.py
 users_data.csv
+db/proton_id.db

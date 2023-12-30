@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template
+from flask import Blueprint, redirect, render_template, request, url_for
 from blueprints.auth.forms.login_form import LoginForm
 from flask_login import login_user, logout_user
 from data.db_session import db_sess, global_init
@@ -17,6 +17,8 @@ def login():
     if form.validate_on_submit():
         user = db_sess.query(User).filter(User.login == form.login.data).first()
         login_user(user, remember=form.remember_me.data)
+        if request.args.get('service_id') is not None:
+            return redirect(url_for("services.auth", service_id=request.args.get('service_id')))
         return redirect('/')
     return render_template('login.html', form=form)
 

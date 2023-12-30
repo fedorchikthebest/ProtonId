@@ -4,4 +4,4 @@ from wtforms import SubmitField, HiddenField
 
 class ConfirmAuth(FlaskForm):
     submit = SubmitField('Войти')
-    data = HiddenField('data')
+    data = HiddenField('b64data')

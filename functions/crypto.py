@@ -4,9 +4,9 @@ import base64
 
 def b64encrypt(data: str, key: str) -> str:
 
-    key = bytearray(key.encode('utf-8'))
+    key = bytearray(key.encode())
 
-    plain_text = bytearray(str(data).encode('utf-8'))
+    plain_text = bytearray(str(data).encode())
 
     cipher_obj = gostcrypto.gostcipher.new('kuznechik',
                                            key,
@@ -14,12 +14,12 @@ def b64encrypt(data: str, key: str) -> str:
 
     cipher_text = cipher_obj.encrypt(plain_text)
 
-    return base64.b64encode(cipher_text).decode('utf-8')
+    return base64.b64encode(cipher_text).decode()
 
 
 def b64decrypt(data: str, key: str) -> str:
 
-    key = bytearray(key.encode('utf-8'))
+    key = bytearray(bytes(key))
 
     plain_text = bytearray(base64.b64decode(data))
 
@@ -29,4 +29,4 @@ def b64decrypt(data: str, key: str) -> str:
 
     decrypt_text = cipher_obj.decrypt(plain_text)
 
-    return decrypt_text.decode('utf-8').replace(b'\x00'.decode('utf-8'), '')
+    return decrypt_text.replace(b'\x00', b'').decode()

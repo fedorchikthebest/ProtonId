@@ -12,12 +12,7 @@
     {{ eccess }}
 </h2>
 <form method="post" action="http://{{ host }}/protonID/auth">
-    {{ form.name() }}
-    {{ form.sure_name() }}
-    {{ form.second_name() }}
-    {{ form.class_num() }}
-    {{ form.class_liter() }}
-    {{ form.login() }}
+    {{ form.data() }}
     {{ form.submit() }}
 </form>
 </body>

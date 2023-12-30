@@ -1,10 +1,11 @@
-from flask import Blueprint, redirect, render_template, url_for, jsonify
+from flask import Blueprint, redirect, render_template, url_for, request
 from blueprints.services.forms.add_service_form import AddServiceForm
 from data.services import Service
 from data.db_session import db_sess
 from flask_login import login_required, current_user
 from functions.crypto import b64encrypt
 from datetime import datetime
+from json import dumps
 from blueprints.services.forms.confirm_auth import ConfirmAuth
 
 services = Blueprint('services', __name__, template_folder='templates',
@@ -35,7 +36,7 @@ def auth(service_id):
     key = service.kuznechik_key
     if service.access_type == 2:
         data = {
-            'datetime': datetime.now(),
+            'datetime': str(datetime.now()),
             'name': current_user.name,
             'sure_name': current_user.sure_name,
             'second_name': current_user.second_name,
@@ -46,13 +47,12 @@ def auth(service_id):
         }
     else:
         data = {
-            'datetime': datetime.now(),
+            'datetime': str(datetime.now()),
             'login': current_user.login,
             'is_teacher': current_user.is_teacher
         }
-    form = ConfirmAuth(
-        data=b64encrypt(jsonify(data), key)
-    )
+    form = ConfirmAuth()
+    form.data.data = b64encrypt(dumps(data, ensure_ascii=False), key)
     acces_type = ['',
                   'Этот сайт получит только ваш логин и статус',
                   'Этот сайт узнает о вас ФИО, логин и класс']
@@ -63,6 +63,7 @@ def auth(service_id):
 
 @services.errorhandler(401)
 def error401(error):
-    return redirect(url_for('auth.login'))
+    print(error)
+    return redirect(url_for('auth.login', service_id=request.url.split('/')[-1]))
 
 
