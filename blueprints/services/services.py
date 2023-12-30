@@ -1,9 +1,10 @@
-from flask import Blueprint, redirect, render_template, url_for
+from flask import Blueprint, redirect, render_template, url_for, jsonify
 from blueprints.services.forms.add_service_form import AddServiceForm
 from data.services import Service
 from data.db_session import db_sess
 from flask_login import login_required, current_user
 from functions.crypto import b64encrypt
+from datetime import datetime
 from blueprints.services.forms.confirm_auth import ConfirmAuth
 
 services = Blueprint('services', __name__, template_folder='templates',
@@ -33,20 +34,27 @@ def auth(service_id):
     service = db_sess.get(Service, service_id)
     key = service.kuznechik_key
     if service.access_type == 2:
-        form = ConfirmAuth(
-            name=b64encrypt(current_user.name, key),
-            sure_name=b64encrypt(current_user.sure_name, key),
-            second_name=b64encrypt(current_user.second_name, key),
-            class_num=b64encrypt(current_user.class_num, key),
-            class_liter=b64encrypt(current_user.class_liter, key),
-            login=b64encrypt(current_user.login, key)
-        )
+        data = {
+            'datetime': datetime.now(),
+            'name': current_user.name,
+            'sure_name': current_user.sure_name,
+            'second_name': current_user.second_name,
+            'class_num': current_user.class_num,
+            'class_liter': current_user.class_liter,
+            'login': current_user.login,
+            'is_teacher': current_user.is_teacher
+        }
     else:
-        form = ConfirmAuth(
-                            login=b64encrypt(current_user.login, key),
-                           test_key=b64encrypt('FEDOR_GORLENKO', key),)
+        data = {
+            'datetime': datetime.now(),
+            'login': current_user.login,
+            'is_teacher': current_user.is_teacher
+        }
+    form = ConfirmAuth(
+        data=b64encrypt(jsonify(data), key)
+    )
     acces_type = ['',
-                  'Этот сайт получит только ваш логин',
+                  'Этот сайт получит только ваш логин и статус',
                   'Этот сайт узнает о вас ФИО, логин и класс']
     if service is None:
         return 'service not found'

@@ -10,8 +10,7 @@ def b64encrypt(data: str, key: str) -> str:
 
     cipher_obj = gostcrypto.gostcipher.new('kuznechik',
                                            key,
-                                           gostcrypto.gostcipher.MODE_ECB,
-                                           pad_mode=gostcrypto.gostcipher.PAD_MODE_1)
+                                           gostcrypto.gostcipher.MODE_CTR)
 
     cipher_text = cipher_obj.encrypt(plain_text)
 
@@ -26,8 +25,7 @@ def b64decrypt(data: str, key: str) -> str:
 
     cipher_obj = gostcrypto.gostcipher.new('kuznechik',
                                            key,
-                                           gostcrypto.gostcipher.MODE_ECB,
-                                           pad_mode=gostcrypto.gostcipher.PAD_MODE_1)
+                                           gostcrypto.gostcipher.MODE_CTR)
 
     decrypt_text = cipher_obj.decrypt(plain_text)
 

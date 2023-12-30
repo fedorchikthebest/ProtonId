@@ -50,6 +50,7 @@ def register_csv(csv_file):
                 second_name=i.get('second_name'),
                 class_num=i.get('class_num'),
                 class_liter=i.get('class_liter'),
+                is_teacher=bool(int(i.get('is_teacher')))
             )
             password = ''.join([random.choice(string.ascii_letters) for _ in range(8)])
             user.set_password(password)

@@ -20,7 +20,7 @@ class User(SqlAlchemyBase, UserMixin):
     class_liter = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     creation_year = sqlalchemy.Column(sqlalchemy.Integer, default=current_jule().year)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    is_admin = sqlalchemy.Column(sqlalchemy.Boolean, nullable=True, default=False)
+    is_teacher = sqlalchemy.Column(sqlalchemy.Boolean, nullable=True, default=False)
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
