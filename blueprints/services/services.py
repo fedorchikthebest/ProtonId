@@ -21,7 +21,8 @@ def add_service():
             owner_id=current_user.id,
             kuznechik_key=form.kuznechik_key.data,
             host_name=form.host.data,
-            access_type=form.access_type.data
+            access_type=form.access_type.data,
+            init_vector=form.init_vec.data
         )
         db_sess.add(new_service)
         db_sess.commit()
@@ -32,8 +33,9 @@ def add_service():
 @services.route('/auth/<string:service_id>', methods=['GET', 'POST'])
 @login_required
 def auth(service_id):
-    service = db_sess.get(Service, service_id)
+    service: Service = db_sess.get(Service, service_id)
     key = service.kuznechik_key
+    vector = service.init_vector
     if service.access_type == 2:
         data = {
             'datetime': str(datetime.now()),
@@ -52,7 +54,7 @@ def auth(service_id):
             'is_teacher': current_user.is_teacher
         }
     form = ConfirmAuth()
-    form.data.data = b64encrypt(dumps(data, ensure_ascii=False), key)
+    form.data.data = b64encrypt(dumps(data, ensure_ascii=False), key, vector)
     acces_type = ['',
                   'Этот сайт получит только ваш логин и статус',
                   'Этот сайт узнает о вас ФИО, логин и класс']
@@ -65,5 +67,3 @@ def auth(service_id):
 def error401(error):
     print(error)
     return redirect(url_for('auth.login', service_id=request.url.split('/')[-1]))
-
-

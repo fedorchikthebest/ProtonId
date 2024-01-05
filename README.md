@@ -8,26 +8,27 @@ ProtonID
 -
 Для интеграции своего приложения, вам нужно через главную страницу создать свой сервис. В первой строке, вам нужно ввести
 своё доменное имя, во второй, вам нужно ввести криптографический ключ (Любые буквы латинского алфавита) и выбрать, то, какие
-данные будет передовать программа. После регистрации сервиса, вы увидите данные о нём на главной странице. Теперь вам нужно создать оброботчик страници /protonID/auth, при авторизации, на неё будет отправляться форма с полем data, которое зашифрованно криптографическим алгоритмом *Кузнечик* в режиме **CTR** закодированное с помощью base64.
+данные будет передовать программа. После регистрации сервиса, вы увидите данные о нём на главной странице. Теперь вам нужно создать оброботчик страници /protonID/auth, при авторизации, на неё будет отправляться форма с полем data, которое зашифрованно криптографическим алгоритмом **Кузнечик** в режиме **CBC** закодированное с помощью base64.
 Пример функции для расшифровки:
 ```py
 import gostcrypto
 import base64
 
 
-def b64decrypt(data: str, key: str) -> str:
+def b64decrypt(data: str, key: str, init_vect: str) -> str:
 
-    key = bytearray(key.encode('utf-8'))
+    key = bytearray(key.encode())
 
     plain_text = bytearray(base64.b64decode(data))
 
     cipher_obj = gostcrypto.gostcipher.new('kuznechik',
                                            key,
-                                           gostcrypto.gostcipher.MODE_CTR)
+                                           gostcrypto.gostcipher.MODE_CBC,
+                                           init_vect=bytearray(init_vect.encode()))
 
     decrypt_text = cipher_obj.decrypt(plain_text)
 
-    return decrypt_text.decode('utf-8').replace(b'\x00'.decode('utf-8'), '')
+    return decrypt_text.replace(b'\x00', b'').decode()
 ```
 В поле data будет находится json с данными о человеке. Пример json'а:
 ```json
@@ -51,5 +52,5 @@ def b64decrypt(data: str, key: str) -> str:
 
 Если человек является учителем, то информация о его классе не указывается.
 Затем вам нужно прописать комманду 
-```flask auth register-from-csv "Путь до вашего файла"```
+`flask auth register-from-csv "Путь до вашего файла"`
 После выполнения этой комманды, логины и пароли авторизованных сохранятся в файд **users_data.csv** в том же порядке, в котором они были в исходном файле.
